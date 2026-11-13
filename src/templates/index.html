@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Fraud Detection</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            margin: 0;
+            padding: 40px 15px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #00000012;
+        }
+
+        h1 {
+            color: #17365d;
+            text-align: center;
+        }
+
+        p {
+            color: #666;
+            text-align: center;
+        }
+
+        textarea {
+            width: 100%;
+            height: 220px;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: monospace;
+            margin-top: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 15px;
+            background: #17365d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #24558c;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>Bank Fraud Detection</h1>
+
+    <p>Enter transaction data to check whether it is fraudulent.</p>
+
+    <textarea id="transactionData"
+        placeholder='Paste transaction JSON containing all 30 features here...'></textarea>
+
+    <button onclick="checkTransaction()">
+        Check Transaction
+    </button>
+
+    <div id="result"></div>
+
+</div>
+
+<script>
+async function checkTransaction() {
+
+    const resultBox = document.getElementById("result");
+
+    try {
+        const transaction = JSON.parse(
+            document.getElementById("transactionData").value
+        );
+
+        const response = await fetch("/predict", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(transaction)
+        });
+
+        const data = await response.json();
+
+        resultBox.style.display = "block";
+
+        if (!response.ok) {
+            resultBox.innerText = data.error || "Something went wrong";
+            resultBox.style.background = "#ffe5e5";
+            return;
+        }
+
+        resultBox.style.background =
+            data.prediction === 1 ? "#ffe5e5" : "#e4f7e9";
+
+        resultBox.innerHTML = `
+            <h2>${data.result}</h2>
+            <p>Fraud Probability: ${(
+                data.fraud_probability * 100
+            ).toFixed(2)}%</p>
+        `;
+
+    } catch (error) {
+        resultBox.style.display = "block";
+        resultBox.style.background = "#ffe5e5";
+        resultBox.innerText = "Please enter valid transaction JSON.";
+    }
+}
+</script>
+
+</body>
+</html>

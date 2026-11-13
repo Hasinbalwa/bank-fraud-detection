@@ -1,0 +1,72 @@
+BANK FRAUD DETECTION — EXTERNAL EVALUATION REPORT
+=================================================
+
+Model: Random Forest
+Model file: models/fraud_detection_rf.pkl
+Decision threshold: 0.40
+
+1. DATASET INFORMATION
+----------------------
+Dataset: External online banking fraud inference-log dataset
+Source: https://doi.org/10.5281/zenodo.20030064
+
+Total records: 56,962
+Legitimate labels: 56,864
+Fraud labels: 98
+Input features: 30
+
+2. EVALUATION RESULTS
+---------------------
+Fraud Precision: 100.00%
+Fraud Recall:     96.94%
+Fraud F1-score:   98.45%
+Accuracy:         99.9947%
+ROC-AUC:          0.99999982
+
+3. CONFUSION MATRIX
+-------------------
+                     Predicted Legitimate   Predicted Fraud
+
+Actual Legitimate          56,864                 0
+Actual Fraud                    3                95
+
+True Negatives: 56,864
+False Positives: 0
+False Negatives: 3
+True Positives: 95
+
+4. DUPLICATE CHECK
+------------------
+External records checked: 56,962
+Exact matching feature records in original dataset: 0
+Non-matching feature records: 56,962
+
+This check only rules out exact matches across the 30 input
+features. It does not rule out near-duplicates or establish
+independent data collection.
+
+5. IMPORTANT LIMITATIONS
+------------------------
+The dataset documentation states that only transactions flagged
+by the source system were manually reviewed. Other transactions
+were automatically labelled legitimate without individual review.
+
+This creates verification bias. Some actual fraud may therefore
+be incorrectly labelled as legitimate.
+
+The results measure agreement with the dataset's recorded labels.
+They do not prove real-world banking performance.
+
+The external dataset is a public demonstration dataset, not
+verified transaction data from a licensed bank.
+
+6. CONCLUSION
+-------------
+The saved Random Forest model achieved high scores against the
+external dataset's recorded labels.
+
+Further evaluation using independently verified, representative
+banking data is necessary before making claims about real-world
+fraud detection performance.
+
+Decision threshold used: 0.40
